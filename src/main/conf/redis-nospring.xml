@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jedis>    
+    <jedispoolconfig>
+        <maxactive>20</maxactive>
+        <maxidle>10</maxidle>
+        <maxwait>1000</maxwait>
+        
+        <!-- 这个属性做什么用，有待检查-->
+        <testOnBorrow>true</testOnBorrow>
+        <testOnReturn>true</testOnReturn>
+         
+         
+    </jedispoolconfig>
+    
+    <jedisshardinfos>
+      <jedisshardinfo ip="192.168.1.128" port="6379"/>
+        <!--可以在这里配置更多的
+        <jedisshardinfo ip="10.120.220.12" port="6379"/>
+        
+        <jedisshardinfo ip="10.120.16.121" port="6379"/
+        <jedisshardinfo ip="xx.xx.xx.xx" port="11"/>
+        -->
+    </jedisshardinfos>
+</jedis>    

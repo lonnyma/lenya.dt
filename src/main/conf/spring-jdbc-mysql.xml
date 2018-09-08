@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+    
+   <!--  <bean id="redisCacheImpl" class="cn.lenya.soft.db.redis.RedisCacheImpl"/>
+	<bean id="springUtil" class="cn.lenya.soft.common.utils.SpringUtil"  scope="singleton" />
+ -->
+ 
+ <!--======== 定义数据源，使用wildfly数据源实现======================= -->
+<!-- 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName">
+			<value>java:/MySQLDS</value>
+		</property>
+		<property name="resourceRef">
+			<value>false</value>
+		</property>		
+	</bean> -->
+ 
+ 
+<!--======== 定义数据源，使用weblogic数据源实现======================= -->
+<!-- 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!-- 		<property name="jndiName"> -->
+<!-- 			<value>jdbc/mysql</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="resourceRef"> -->
+<!-- 			<value>false</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="jndiEnvironment"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="java.naming.provider.url">t3://127.0.0.1:7001</prop>				 -->
+<!-- 				<prop key="java.naming.factory.initial">weblogic.jndi.WLInitialContextFactory</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+	
+
+<!-- 	==========数据库连接池c3p0==========  -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	    <property name="driverClass"><value>${mjdbc.classDriverName}</value></property>
+		<property name="jdbcUrl"><value>${mjdbc.url}</value></property>
+		<property name="user"><value>${mjdbc.userName}</value></property>
+		<property name="password"><value>${mjdbc.userPassword}</value></property>
+		<property name="autoCommitOnClose" ><value>${mjdbc.autoCommitOnClose}</value></property>
+		<property name="checkoutTimeout" ><value>${mjdbc.getConnTime}</value></property>
+		<property name="initialPoolSize" ><value>${mjdbc.initConnSize}</value></property>
+		<property name="minPoolSize" ><value>${mjdbc.minConnSize}</value></property>
+		<property name="maxPoolSize" ><value>${mjdbc.maxConnSize}</value></property>
+		<property name="maxIdleTime" ><value>${mjdbc.maxFreeTime}</value></property>
+		<property name="acquireIncrement" ><value>${mjdbc.acquireIncrement}</value></property>
+		<property name="maxIdleTimeExcessConnections" ><value>${mjdbc.maxIdleTimeExcessConnections}</value></property>
+	</bean>
+
+
+	<!--事务模板 -->
+	<bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager">
+		</property>
+	</bean>
+	<!-- jdbc事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource">
+		</property>
+	</bean>
+   
+   <!-- 采用@Transaction注解方式使用事务transaction-manager：指定事务管理器 -->
+   <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
