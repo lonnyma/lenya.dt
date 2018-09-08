@@ -1,3 +1,6 @@
+/* Copyright (c) 2018 白羊人工智能在线技术. All rights reserved.
+ * http://www.byond.cn
+ */
 package cn.lenya.soft.db.redis;
 
 import java.util.List;
@@ -20,8 +23,7 @@ import redis.clients.jedis.exceptions.JedisException;
  */
 public class RedisCacheImpl implements ICache {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(RedisCacheImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(RedisCacheImpl.class);
 
 	private static ShardedJedisPool shardedJedisPool = null;
 
@@ -241,7 +243,7 @@ public class RedisCacheImpl implements ICache {
 	 * 插入Map对象到名称为key的Map
 	 */
 	public void saveToMap(String key, Map<Object, Object> value) {
-		ShardedJedis jedis =  checkShardedJedis();
+		ShardedJedis jedis = checkShardedJedis();
 		if (jedis != null) {
 			// 用来打印在集群时，选择了哪个Host
 			// log.info("host="+jedis.getShard(key).getClient().getHost());
@@ -483,9 +485,7 @@ public class RedisCacheImpl implements ICache {
 					shardedJedisPool.returnResource(jedis);
 				}
 			} catch (Exception e) {
-				log.error(
-						"Error happen when return jedis to pool, try to close it directly.",
-						e);
+				log.error("Error happen when return jedis to pool, try to close it directly.", e);
 			}
 		}
 	}
