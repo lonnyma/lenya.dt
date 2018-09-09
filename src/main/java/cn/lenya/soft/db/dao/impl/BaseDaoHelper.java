@@ -1,31 +1,32 @@
-/* Copyright (c) 2018 白羊人工智能在线技术. All rights reserved.
- * http://www.byond.cn
- */
 package cn.lenya.soft.db.dao.impl;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+
+
 public class BaseDaoHelper<T> extends BaseDao implements Runnable {
-	private CountDownLatch runningThreadNum;
+	 //���̼߳�����,���������е��߳���	 
+    private CountDownLatch runningThreadNum;   	
 	private List<?> result = null;
-	private List<Map<String, Object>> rslist = null;
+	private List<Map<String, Object>> rslist=null;
 	private Class<T> clazz = null;
-	private Map<String, Object> orm = null;
-
-	public BaseDaoHelper(CountDownLatch runningThreadNum, List<Map<String, Object>> rslist, Class<T> clazz,
-			Map<String, Object> orm) {
-		this.runningThreadNum = runningThreadNum;
-		this.rslist = rslist;
-		this.clazz = clazz;
-		this.orm = orm;
+	private Map<String, Object> orm=null;
+	
+	public BaseDaoHelper (CountDownLatch runningThreadNum,List<Map<String, Object>> rslist,
+			Class<T> clazz, Map<String, Object> orm){
+		 this.runningThreadNum= runningThreadNum;
+		 this.rslist = rslist;
+		 this.clazz=clazz;
+		 this.orm=orm;
 	}
-
+	
+	
 	public void run() {
 		try {
 			result = getList(rslist, clazz, orm);
-			runningThreadNum.countDown();
+			runningThreadNum.countDown();//�������е��߳����һ
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,5 +71,8 @@ public class BaseDaoHelper<T> extends BaseDao implements Runnable {
 	public void setRunningThreadNum(CountDownLatch runningThreadNum) {
 		this.runningThreadNum = runningThreadNum;
 	}
+	
+	
+	
 
 }
