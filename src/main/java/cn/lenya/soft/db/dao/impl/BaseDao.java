@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import cn.lenya.soft.db.inter.ISQLBase;
@@ -23,21 +24,10 @@ public class BaseDao extends BaseDaoImpl implements ISQLBase {
 
 	@SuppressWarnings("unchecked")
 	public <T> T getObject(String sql, Object[] args, Class<T> clazz, Map<String, Object> orm) throws Exception {
-		T rs = null;
-		try {
-			// Map<String,Object> obj = getMap(sql, args);
-			rs = (T) initBean(getMap(sql, args), clazz, orm);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		T rs = (T) initBean(getMap(sql, args), clazz, orm);
 		return rs;
 	}
 
-	public <T> T getObject(Map<String, Object> rs, Class<T> clazz, Map<String, Object> orm) throws Exception {
-
-		return super.getObject(rs, clazz, orm);
-	}
 
 	@SuppressWarnings("unchecked")
 	public <T> Map<String, T> getMap(String sql, Object[] args) throws Exception {
@@ -51,7 +41,6 @@ public class BaseDao extends BaseDaoImpl implements ISQLBase {
 		Map<String, Object> rss = ds.queryForMap(sql, args);
 		Map<String, Field> st = new HashMap<String, Field>();
 		for (Object field : BaseDao.getAllFields(st, clazz).keySet()) {
-
 			if (rss.containsKey(orm.get(field.toString()))) {
 				String key = (String) orm.get(field.toString());
 				rs.put(field.toString().toString(), (T) rss.get(key));
@@ -63,17 +52,6 @@ public class BaseDao extends BaseDaoImpl implements ISQLBase {
 	public <T> Map<String, T> getObjectMap(Map<String, Object> rs0, Class<T> clazz, Map<String, Object> orm)
 			throws Exception {
 		return super.getObjectMap(rs0, clazz, orm);
-		// init(rs0,clazz,orm);
-		// Map<String, T> rs = new HashMap<String, T>();
-		// Map<String, Field> st = new HashMap<String, Field>();
-		// for(Object field:BaseDao.getAllFields(st , clazz).keySet()){
-		//
-		// if(rs0.containsKey(orm.get(field.toString()))){
-		// String key = (String) orm.get(field.toString());
-		// rs.put(field.toString().toString(), (T) rs0.get(key));
-		// }
-		// }
-		// return rs;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -100,6 +78,10 @@ public class BaseDao extends BaseDaoImpl implements ISQLBase {
 		if (rs >= 0)
 			return true;
 		return false;
+	}
+
+	public int saveOrUpt(String sql, Object[] args) throws DataAccessException {
+		return ds.update(sql, args);
 	}
 
 	public Integer getCount(String sql, Object[] args) {

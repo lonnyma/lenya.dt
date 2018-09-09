@@ -42,20 +42,56 @@
 	
 
 <!-- 	==========数据库连接池c3p0==========  -->
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-	    <property name="driverClass"><value>${mjdbc.classDriverName}</value></property>
-		<property name="jdbcUrl"><value>${mjdbc.url}</value></property>
-		<property name="user"><value>${mjdbc.userName}</value></property>
-		<property name="password"><value>${mjdbc.userPassword}</value></property>
-		<property name="autoCommitOnClose" ><value>${mjdbc.autoCommitOnClose}</value></property>
-		<property name="checkoutTimeout" ><value>${mjdbc.getConnTime}</value></property>
-		<property name="initialPoolSize" ><value>${mjdbc.initConnSize}</value></property>
-		<property name="minPoolSize" ><value>${mjdbc.minConnSize}</value></property>
-		<property name="maxPoolSize" ><value>${mjdbc.maxConnSize}</value></property>
-		<property name="maxIdleTime" ><value>${mjdbc.maxFreeTime}</value></property>
-		<property name="acquireIncrement" ><value>${mjdbc.acquireIncrement}</value></property>
-		<property name="maxIdleTimeExcessConnections" ><value>${mjdbc.maxIdleTimeExcessConnections}</value></property>
-	</bean>
+<!-- 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"> -->
+<!-- 	    <property name="driverClass"><value>${mjdbc.classDriverName}</value></property> -->
+<!-- 		<property name="jdbcUrl"><value>${mjdbc.url}</value></property> -->
+<!-- 		<property name="user"><value>${mjdbc.userName}</value></property> -->
+<!-- 		<property name="password"><value>${mjdbc.userPassword}</value></property> -->
+<!-- 		<property name="autoCommitOnClose" ><value>${mjdbc.autoCommitOnClose}</value></property> -->
+<!-- 		<property name="checkoutTimeout" ><value>${mjdbc.getConnTime}</value></property> -->
+<!-- 		<property name="initialPoolSize" ><value>${mjdbc.initConnSize}</value></property> -->
+<!-- 		<property name="minPoolSize" ><value>${mjdbc.minConnSize}</value></property> -->
+<!-- 		<property name="maxPoolSize" ><value>${mjdbc.maxConnSize}</value></property> -->
+<!-- 		<property name="maxIdleTime" ><value>${mjdbc.maxFreeTime}</value></property> -->
+<!-- 		<property name="acquireIncrement" ><value>${mjdbc.acquireIncrement}</value></property> -->
+<!-- 		<property name="maxIdleTimeExcessConnections" ><value>${mjdbc.maxIdleTimeExcessConnections}</value></property> -->
+<!-- 	</bean> -->
+<!-- 	druid   Alibaba数据库连接池 -->
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+			init-method="init" destroy-method="close">
+			<property name="driverClassName"><value>${mjdbc.classDriverName}</value></property>
+			<!-- 基本属性 url、user、password -->
+			<property name="url" ><value>${mjdbc.url}</value></property>
+			<property name="username" ><value>${mjdbc.userName}</value></property>
+			<property name="password" ><value>${mjdbc.userPassword}</value></property>
+		
+			<!-- 配置初始化大小、最小、最大 -->
+			<property name="initialSize" value="${mjdbc.initConnSize}" />
+			<property name="minIdle" value="${mjdbc.minConnSize}" />
+			<property name="maxActive" value="${mjdbc.maxConnSize}" />
+		
+			<!-- 配置获取连接等待超时的时间 -->
+			<property name="maxWait" value="60000" />
+		
+			<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+			<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+			<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+			<property name="minEvictableIdleTimeMillis" value="300000" />
+		
+			<property name="validationQuery" value="SELECT 'x'" />
+			<property name="testWhileIdle" value="true" />
+			<property name="testOnBorrow" value="false" />
+			<property name="testOnReturn" value="false" />
+		
+			<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+			<property name="poolPreparedStatements" value="true" />
+			<property name="maxPoolPreparedStatementPerConnectionSize"
+				value="20" />
+		
+			<!-- 配置监控统计拦截的filters -->
+			<property name="filters" value="stat,log4j" />
+		</bean>
 
 
 	<!--事务模板 -->
