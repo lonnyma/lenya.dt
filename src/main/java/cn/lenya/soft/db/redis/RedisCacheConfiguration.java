@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 白羊人工智能在线技术. All rights reserved.
+/* Copyright (c) 2018 鐧界緤浜哄伐鏅鸿兘鍦ㄧ嚎鎶�鏈�. All rights reserved.
  * http://www.byond.cn
  */
 package cn.lenya.soft.db.redis;
@@ -19,12 +19,13 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.lenya.soft.core.common.utils.ClassUtil;
+
+import cn.lenya.soft.utils.ClassUtil;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
 
 /*
- * 此类读取redis-nospring.xml
+ * redis-nospring.xml
  */
 public class RedisCacheConfiguration {
 
@@ -94,8 +95,8 @@ public class RedisCacheConfiguration {
 					}
 				}
 			} catch (DocumentException de) {
-				log.error("src/redis-nospring.xml，读取出错", de);
-				throw new IllegalStateException("src/redis-nospring.xml，读取出错");
+				log.error("src/redis-nospring.xml parse failed ", de);
+				throw new IllegalStateException("src/redis-nospring.xml parse failed !!");
 			}
 		}
 
