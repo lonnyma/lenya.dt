@@ -3,6 +3,8 @@
  */
 package cn.lenya.soft.db.inter;
 
+import org.springframework.dao.DataAccessException;
+
 public interface ISQLBase {
 	/**
 	 * 功能描述：更新数据库记录
@@ -11,7 +13,7 @@ public interface ISQLBase {
 	 * @param args
 	 * @return
 	 */
-	boolean saveOrUpdate(String sql, Object[] args);
+	boolean saveOrUpdate(String sql, Object[] args)throws DataAccessException,Exception;
 
 	/**
 	 * 功能描述：得到记录总数

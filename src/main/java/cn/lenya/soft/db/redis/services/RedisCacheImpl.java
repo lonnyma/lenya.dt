@@ -1,16 +1,18 @@
 /* Copyright (c) 2018 白羊人工智能在线技术. All rights reserved.
  * http://www.byond.cn
  */
-package cn.lenya.soft.db.redis;
+package cn.lenya.soft.db.redis.services;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.lenya.soft.db.inter.ICache;
+import cn.lenya.soft.db.redis.RedisCacheFactory;
 import cn.lenya.soft.utils.ObjectConverter;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
@@ -68,15 +70,13 @@ public class RedisCacheImpl implements ICache {
 	protected void release(ShardedJedis jedis, boolean isBroken) {
 		if (jedis != null) {
 			if (isBroken) {
-				shardedJedisPool.returnBrokenResource(jedis);
-			} else {
-				shardedJedisPool.returnResource(jedis);
-			}
+				jedis.close();
 		}
+	}
 	}
 
 	private void releaseShardedJedis(ShardedJedis jedis) {
-		shardedJedisPool.returnResource(jedis);
+		jedis.close();
 	}
 
 	// -------------------------------最质朴--------------------------------------
@@ -333,7 +333,7 @@ public class RedisCacheImpl implements ICache {
 			byte[] keyBytes = key.getBytes();
 			byte[] valueBytes = ObjectConverter.toByteArray(value);
 			jedis.sadd(keyBytes, valueBytes);
-			shardedJedisPool.returnResource(jedis);
+			jedis.close();
 		}
 	}
 
@@ -480,14 +480,57 @@ public class RedisCacheImpl implements ICache {
 		if (jedis != null) {
 			try {
 				if (connectionBroken) {
-					shardedJedisPool.returnBrokenResource(jedis);
-				} else {
-					shardedJedisPool.returnResource(jedis);
+					jedis.close();
 				}
 			} catch (Exception e) {
 				log.error("Error happen when return jedis to pool, try to close it directly.", e);
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see cn.lenya.soft.db.inter.ICache#delete(java.lang.String[])
+	 */
+	@Override
+	public void delete(String... key) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see cn.lenya.soft.db.inter.ICache#generateUUID()
+	 */
+	@Override
+	public String generateUUID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see cn.lenya.soft.db.inter.ICache#setLock(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Boolean setLock(String lockId, String requestId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see cn.lenya.soft.db.inter.ICache#lock(java.lang.String, java.lang.String, java.lang.Long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public Boolean lock(String lockId, String requestId, Long validTime, TimeUnit timeUnit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see cn.lenya.soft.db.inter.ICache#unLock(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Boolean unLock(String lockId, String requestId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

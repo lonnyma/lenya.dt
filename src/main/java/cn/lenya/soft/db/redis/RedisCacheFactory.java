@@ -9,12 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.lenya.soft.db.inter.ICache;
-
+import cn.lenya.soft.db.redis.services.RedisCacheImpl;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
 import redis.clients.jedis.ShardedJedisPool;
-import redis.clients.util.Hashing;
-import redis.clients.util.Sharded;
+import redis.clients.jedis.util.Hashing;
+import redis.clients.jedis.util.Sharded;
 
 public class RedisCacheFactory {
 	private static final Logger log = LoggerFactory.getLogger(RedisCacheFactory.class);
@@ -26,12 +26,12 @@ public class RedisCacheFactory {
 
 	private static void configJedisPool() {
 		log.info("configJedisPool");
-		poolConfig = RedisCachePoolConfigProvider.getRedisPoolConfig();
+		poolConfig = RedisCacheConfiguration.getRedisPoolConfig();
 	}
 
 	private static void initJedisShardInfo() {
 		log.info("initJedisShardInfo");
-		shards = RedisCacheJedisShardInfoProvider.getJedisShardInfos();
+		shards = RedisCacheConfiguration.getJedisShardInfos();
 		if (shards.size() < 1) {
 			throw new IllegalStateException("JedisShardInfo is must,but not it is null,please check");
 		}

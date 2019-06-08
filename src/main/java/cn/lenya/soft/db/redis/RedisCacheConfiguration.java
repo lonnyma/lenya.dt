@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.lenya.soft.core.common.utils.ClassUtil;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
 
 /*
@@ -59,7 +60,7 @@ public class RedisCacheConfiguration {
 				Element root = document.getRootElement();
 				for (Iterator<?> it = root.elementIterator(); it.hasNext();) {
 					Element e = (Element) it.next();
-					System.out.println("element:" + e.getName());
+					log.info("element:{}", e.getName());
 					if (e.getName().equalsIgnoreCase("jedispoolconfig")) {
 						poolConfigProperties = new Properties();
 						for (Iterator<?> it2 = e.elementIterator(); it2.hasNext();) {
@@ -99,7 +100,36 @@ public class RedisCacheConfiguration {
 		}
 
 	}
+	public static List<JedisShardInfo> getJedisShardInfos() {
+		return configuration().configurationJedisShardInfos();
+	}
+	
+	public static JedisPoolConfig getRedisPoolConfig() {
+		Properties p = RedisCacheConfiguration.configuration().configurationRedisPool();
+		if (p == null) {
+			throw new IllegalStateException("JedisPoolConfig is must,but not it is null,please check");
+		}
+		JedisPoolConfig jpc = new JedisPoolConfig();
 
+		int maxactive = Integer.parseInt(p.getProperty("maxactive"));
+		long maxwait = Long.parseLong(p.getProperty("maxwait"));
+		int maxidle = Integer.parseInt(p.getProperty("maxidle"));
+		boolean testOnBorrow = Boolean.parseBoolean(p.get("testOnBorrow").toString());
+		boolean testOnReturn = Boolean.parseBoolean(p.getProperty("testOnReturn").toString());
+
+		jpc.setMaxTotal(maxactive);
+		jpc.setMaxWaitMillis(maxwait);
+		jpc.setMaxIdle(maxidle);
+		jpc.setTestOnBorrow(testOnBorrow);
+		jpc.setTestOnReturn(testOnReturn);
+
+		// jpc.setTestWhileIdle(true);
+		// jpc.setMinEvictableIdleTimeMillis(60000);
+		// jpc.setTimeBetweenEvictionRunsMillis(30000);
+		// jpc.setNumTestsPerEvictionRun(-1);
+		return jpc;
+	}
+	
 	public Properties configurationRedisPool() {
 		if (poolConfigProperties != null) {
 			Iterator<Entry<Object, Object>> it = poolConfigProperties.entrySet().iterator();
@@ -107,9 +137,8 @@ public class RedisCacheConfiguration {
 				Entry<Object, Object> entry = it.next();
 				Object key = entry.getKey();
 				Object value = entry.getValue();
-				System.out.println("key   :" + key);
-				System.out.println("value :" + value);
-				System.out.println("---------------");
+				log.info("key :{} ,value :{}" ,key, value);
+				log.info("---------------");
 			}
 		} else {
 			System.out.println("poolConfigProperties is null");
@@ -120,5 +149,5 @@ public class RedisCacheConfiguration {
 	public List<JedisShardInfo> configurationJedisShardInfos() {
 		return shards;
 	}
-
+	
 }
